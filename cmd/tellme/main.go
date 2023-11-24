@@ -8,14 +8,28 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, fmt.Errorf("引数が足りません"))
-		os.Exit(1)
-	}
-	query := os.Args[1]
-
-	if err := tellme.Run(query); err != nil {
+	if err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func run() error {
+	if len(os.Args) < 2 {
+		return fmt.Errorf("引数が足りません")
+	}
+	object := os.Args[1]
+
+	ai, err := tellme.NewAI()
+	if err != nil {
+		return err
+	}
+
+	answer, err := ai.Describes(object)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(answer)
+	return nil
 }
